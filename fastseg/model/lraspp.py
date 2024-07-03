@@ -74,11 +74,12 @@ class LRASPP(BaseSegmentation):
         self.conv_up3 = ConvBnRelu(num_filters + 32, num_filters, kernel_size=1)
         self.last = nn.Conv2d(num_filters, num_classes, kernel_size=1)
 
-    def forward(self, x):
+def forward(self, x):
+    with open('/content/drive/MyDrive/debug_output.txt', 'w') as f:
         s2, s4, final = self.trunk(x)
         if self.use_aspp:
             aspp_pool_output = F.interpolate(self.aspp_pool(final), size=final.shape[2:])
-            print(f"before concat{aspp_pool_output.shape}")
+            f.write(f"before concat {aspp_pool_output.shape}\n")
             aspp = torch.cat([
                 self.aspp_conv1(final),
                 self.aspp_conv2(final),
@@ -87,7 +88,7 @@ class LRASPP(BaseSegmentation):
             ], 1)
             debug_input = self.aspp_pool(final)
             debug_output = aspp_pool_output
-            print(f"Debug tensor input {debug_input},{debug_input.shape}, Debug output {debug_output},{debug_output.shape}")
+            f.write(f"Debug tensor input {debug_input}, {debug_input.shape}, Debug output {debug_output}, {debug_output.shape}\n")
         else:
             aspp = self.aspp_conv1(final) * F.interpolate(
                 self.aspp_conv2(final),

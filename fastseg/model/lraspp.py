@@ -78,11 +78,12 @@ class LRASPP(BaseSegmentation):
         s2, s4, final = self.trunk(x)
         if self.use_aspp:
             aspp_pool_output = F.interpolate(self.aspp_pool(final), size=final.shape[2:])
+            print(f"before concat{aspp_pool_output.shape}")
             aspp = torch.cat([
                 self.aspp_conv1(final),
                 self.aspp_conv2(final),
                 self.aspp_conv3(final),
-                aspp_pool_output
+                F.interpolate(self.aspp_pool(final), size=final.shape[2:]),
             ], 1)
             debug_input = self.aspp_pool(final)
             debug_output = aspp_pool_output

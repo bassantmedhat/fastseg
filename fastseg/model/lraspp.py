@@ -75,7 +75,6 @@ class LRASPP(BaseSegmentation):
         self.last = nn.Conv2d(num_filters, num_classes, kernel_size=1)
 
     def forward(self, x):
-        count = 0
         s2, s4, final = self.trunk(x)
         if self.use_aspp:
             aspp_pool_output = F.interpolate(self.aspp_pool(final), size=final.shape[2:])
@@ -87,9 +86,7 @@ class LRASPP(BaseSegmentation):
             ], 1)
             debug_input = self.aspp_pool(final)
             debug_output = aspp_pool_output
-            count+=1
-            if count==1:
-                print(f"Debug tensor input {debug_input},{debug_input.shape}, Debug output {debug_output},{debug_output.shape}")
+            print(f"Debug tensor input {debug_input},{debug_input.shape}, Debug output {debug_output},{debug_output.shape}")
         else:
             aspp = self.aspp_conv1(final) * F.interpolate(
                 self.aspp_conv2(final),

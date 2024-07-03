@@ -77,12 +77,16 @@ class LRASPP(BaseSegmentation):
     def forward(self, x):
         s2, s4, final = self.trunk(x)
         if self.use_aspp:
+            aspp_pool_output = F.interpolate(self.aspp_pool(final), size=final.shape[2:])
             aspp = torch.cat([
                 self.aspp_conv1(final),
                 self.aspp_conv2(final),
                 self.aspp_conv3(final),
-                F.interpolate(self.aspp_pool(final), size=final.shape[2:]),
+                aspp_pool_output
             ], 1)
+            debug_input = self.aspp_pool(final)
+            debug_output = aspp_pool_output
+            print(f"Debug tensor input {debug_input}, Debug output {debug_output}")
         else:
             aspp = self.aspp_conv1(final) * F.interpolate(
                 self.aspp_conv2(final),

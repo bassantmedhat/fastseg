@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 from .efficientnet import EfficientNet_B4, EfficientNet_B0
-from geffnet.mobilenetv3 import MobileNetV3_Large, MobileNetV3_Small
+from geffnet.mobilenetv3 import mobilenetv3_large_075, mobilenetv3_small_075
 
 def get_trunk(trunk_name):
     """Retrieve the pretrained network trunk and channel counts"""

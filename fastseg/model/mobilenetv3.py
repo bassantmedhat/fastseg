@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 from geffnet import tf_mobilenetv3_large_100, tf_mobilenetv3_small_100
-from geffnet.efficientnet_builder import InvertedResidual, Conv2dSame, Conv2dSameExport
+from geffnet.efficientnet_builder import InvertedResidual_n, Conv2dSame, Conv2dSameExport
 
 class MobileNetV3_Large(nn.Module):
     def __init__(self, trunk=tf_mobilenetv3_large_100, pretrained=False):
@@ -20,7 +20,7 @@ class MobileNetV3_Large(nn.Module):
         for block_num in (3, 4, 5, 6):
             for sub_block in range(len(net.blocks[block_num])):
                 sb = net.blocks[block_num][sub_block]
-                if isinstance(sb, InvertedResidual):
+                if isinstance(sb, InvertedResidual_n):
                     m = sb.conv_dw
                 else:
                     m = sb.conv
@@ -45,6 +45,7 @@ class MobileNetV3_Large(nn.Module):
         self.block6 = net.blocks[6]
 
     def forward(self, x):
+        print("Hello Nesma")
         x = self.early(x) # 2x
         x = self.block0(x)
         s2 = x
@@ -72,7 +73,7 @@ class MobileNetV3_Small(nn.Module):
         for block_num in (2, 3, 4, 5):
             for sub_block in range(len(net.blocks[block_num])):
                 sb = net.blocks[block_num][sub_block]
-                if isinstance(sb, InvertedResidual):
+                if isinstance(sb, InvertedResidual_n):
                     m = sb.conv_dw
                 else:
                     m = sb.conv
